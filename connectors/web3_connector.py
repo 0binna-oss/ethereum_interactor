@@ -7,9 +7,12 @@ class Web3Connector:
         self.web3 = None 
 
     def connect(self):
-        web3 = web3(Web3.HTTPProvider(self.provider_url))
-        if web3.isConnected():
-            print(f"Connected to Ethereum network at {self.provider_url}")
-            return web3
-        else:
-            raise Exception("Fialed to connect to Ethereum network") 
+        try:
+            self.web3 = Web3(Web3.HTTPProvider(self.provider_url))
+            if self.web3.is_connected():
+                print(f"Connected to Ethereum network at {self.provider_url}")
+                return self.web3
+            else:
+                raise Exception("Failed to connect to Ethereum network")
+        except Exception as e:
+            raise Exception(f"Connection error: {str(e)}")

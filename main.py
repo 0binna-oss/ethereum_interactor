@@ -10,7 +10,7 @@ def main():
 
         # Connect to the Ethereum network 
         connector = Web3Connector(config.INFURA_URL)
-        web3_instance = connector.connect() 
+        connector.connect() 
 
         # Confirmation message
         print("Ethereum connection established. Ready to interact")
@@ -19,6 +19,8 @@ def main():
         print(f"Configuration Error: {config_error}")
     except ConnectionError as connection_error:
         print(f"Connection Error: {connection_error}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 if __name__ == "__main__":
-    main() 
+    main()

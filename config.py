@@ -8,7 +8,7 @@ load_dotenv()
 INFURA_URL = os.getenv("INFURA_URL", "http://127.0.0.1:8545") 
 PRIVATE_KEY = os.getenv("PRIVATE_KEY") 
 CONTRACT_ADDRESS = os.getenv("CONTRACT_ADDRESS") 
-etherscan_api_key=os.getenv("api key")
+ETHERSCAN_API_KEY=os.getenv("ETHERSCAN_API_KEY")
 
 def validate_config():
     # Validate that all required enviroment variables are set.

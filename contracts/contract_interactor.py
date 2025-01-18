@@ -3,11 +3,10 @@ import requests
 import asyncio
 from pathlib import Path
 from typing import Dict, Any
-from web3 import Web3
-from web3.middleware import geth_poa_middleware
+from web3 import Web3 
 from eth_account import Account
 from web3.exceptions import ContractLogicError
-import config
+import config 
 
 class ContractInteractor:
     def __init__(self, web3: Web3):

@@ -1,9 +1,10 @@
 from web3 import Web3 
 import config
 
-class Web3connector:
+class Web3Connector:
     def __init__(self, provider_url=config.INFURA_URL):
         self.provider_url = provider_url
+        self.web3 = None 
 
     def connect(self):
         web3 = web3(Web3.HTTPProvider(self.provider_url))

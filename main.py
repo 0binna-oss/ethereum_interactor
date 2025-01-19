@@ -2,25 +2,60 @@ import config
 from connectors.web3_connector import Web3Connector
 from contracts.contract_interactor import ContractInteractor
 from events.event_listener import EventListener 
+from wallet.wallet_manager import WalletManager 
+from defi.defi_manager import DefiManager 
+from managers.multi_chain_manager import MultiChainManager 
 
 def main():
-    # Validate the configuration 
-    try:
-        config.validate_config()
+    multi_chain_manager = MultiChainManager()
+    print("Available networks: ethereum, polygon, bsc")
+    network_name = input("Enter the network you want to connect to: ")
+    web3_instance = multi_chain_manager.connect_to_network(network_name)
 
-        # Connect to the Ethereum network 
-        connector = Web3Connector(config.INFURA_URL)
-        connector.connect() 
+    # Initialize managers
+    wallet_manager = WalletManager(web3_instance)
+    defi_manager = DefiManager(web3_instance)
+    multi_chain_manager = MultiChainManager(web3_instance)
 
-        # Confirmation message
-        print("Ethereum connection established. Ready to interact")
-    
-    except ValueError as config_error:
-        print(f"Configuration Error: {config_error}")
-    except ConnectionError as connection_error:
-        print(f"Connection Error: {connection_error}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+    # User menu
+    while True:
+        print("\nOptions:")
+        print("1. Create Wallet")
+        print("2. Import wallet")
+        print("3. Display Balance")
+        print("4. Get Token Balance (Defi)")
+        print("5. Swap tokens (Defi)")
+        print("6. Exit") 
+
+        choice = input("Enter your choice: ")
+        if choice == "1":
+            wallet_manager.create_wallet()
+        elif choice == "2":
+            private_key = input("Enter your private key: ")
+            wallet_manager.import_wallet(private_key)
+        elif choice == "3":
+            address = input("Enter wallet address: ")
+            wallet_manager.get_balance(address)
+        elif choice == "4":
+            address = input("Enter wallet address: ")
+            token_address = input("Enter token contract address: ")
+            balance = defi_manager.get_token_balance(address, token_address)
+            print(f"Token Balance: {balance}")
+        elif choice == "5":
+            # Dummy inputs for token swap
+            router = input("Enter router address: ")
+            token_in = input("Enter token in address: ")
+            token_out = input("Enter token out address: ")
+            amount = int(input("Enter amount to swap: "))
+            wallet_address = input("Enter wallet address: ")
+            wallet_private_key = input("Enter wallet private key: ")
+            wallet = wallet_manager.import_wallet(wallet_private_key)
+            defi_manager.swap_tokens(router, token_in, token_out, amount, wallet)
+        elif choice == "6":
+            print("Exiting...")
+            break
+        else:
+            print("invalid option. Please try again.") 
 
 if __name__ == "__main__":
-    main()
+    main() 

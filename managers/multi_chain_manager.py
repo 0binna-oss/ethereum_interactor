@@ -1,6 +1,8 @@
+from web3 import Web3
+
 class MultiChainManager:
-    def __init__(self, web3):
-        self.web3 = web3
+    def __init__(self, web3_instance):
+        self.web3 = web3_instance 
     
     def switch_network(self, rpc_url):
         # Switch to a new network
@@ -12,7 +14,7 @@ class MultiChainManager:
         self.networks = {
             "ethereum": {
                 "name": "Ethereum Mainnet",
-                "rpc_url": "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"
+                "rpc_url": "https://mainnet.infura.io/v3/d32168dd945e4a2590094a7c64eb431c"
             },
             "polygon": {
                 "name": "Polygon",
@@ -29,12 +31,12 @@ class MultiChainManager:
             raise ValueError(f"Network {network_name} is not supported.")
         
         rpc_url = self.networks[network_name]["rpc_url"]
-        from web3 import Web3 
-        web3_instance = Web3(Web3.HTTPProvider(rpc_url))
+        print(f"Attempting to connect to {network_name} at {rpc_url}") 
+       
+        self.web3 = Web3(Web3.HTTPProvider(rpc_url))
 
-        if web3_instance.is_connected():
+        if self.web3.is_connected():
             print(f"Connected to {self.networks[network_name]['name']}")
-            self.web3 = web3_instance
             return self.web3 
         else:
             raise ConnectionError(f"Failed to connect to {self.networks[network_name]['name']}") 

@@ -1,10 +1,43 @@
+import sys 
 import config 
+from web3 import Web3
 from connectors.web3_connector import Web3Connector
 from contracts.contract_interactor import ContractInteractor
 from events.event_listener import EventListener 
 from wallet.wallet_manager import WalletManager 
 from defi.defi_manager import DefiManager 
 from managers.multi_chain_manager import MultiChainManager 
+
+def main():
+    default_network_name = input("Enter the default network (ethereum/polygon/bsc): ").lower()
+
+    networks = {
+        "ethereum": "https://mainnet.infura.io/v3/d32168dd945e4a2590094a7c64eb431c",
+        "polygon": "https://polygon-rpc.com", 
+        "bsc": "https://bsc-dataseed.binance.org/"
+    }
+
+    if default_network_name not in networks:
+        print(f"Network {default_network_name} is not supported.")
+        return 
+    
+    rpc_url = networks[default_network_name] 
+    Web3_instance = Web3(Web3.HTTPProvider(rpc_url))
+
+    if not Web3_instance.is_connected():
+        print("Failed to connect to the Ethereum Mainnet. Please check your RPC URL.")
+        return 
+
+    print("Successfully connected to Ethereum Mainnet.")
+
+    multi_chain_manager = MultiChainManager() 
+
+    network_name = input("Enter the network name (ethereum/polygon/bsc): ").lower()
+    try:
+        Web3_instance = multi_chain_manager.connect_to_network(network_name)
+        print(f"Connected to {network_name}.")
+    except (ValueError, ConnectionError) as e:
+        print(f"Error: {e}")
 
 def main():
     multi_chain_manager = MultiChainManager()
@@ -15,7 +48,7 @@ def main():
     # Initialize managers
     wallet_manager = WalletManager(web3_instance)
     defi_manager = DefiManager(web3_instance)
-    multi_chain_manager = MultiChainManager(web3_instance)
+    multi_chain_manager = MultiChainManager()
 
     # User menu
     while True:
@@ -56,6 +89,8 @@ def main():
             break
         else:
             print("invalid option. Please try again.") 
+
+
 
 if __name__ == "__main__":
     main() 
